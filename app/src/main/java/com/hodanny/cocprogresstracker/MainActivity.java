@@ -1,17 +1,13 @@
 package com.hodanny.cocprogresstracker;
 
+import android.database.SQLException;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.List;
-
-import au.com.bytecode.opencsv.CSVReader;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -21,9 +17,34 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        FileReader fr = new FileReader(this);
-//        List<Townhall> ths = fr.ParseTownhallLimits();
-        DbHandler db = new DbHandler(this);
+        DbHandler myDbHelper=new DbHandler(this);
+
+        BuildingDataSource dbSource = new BuildingDataSource(this);
+        dbSource.open();
+
+        List<Building> buildings = dbSource.getAllComments();
+        dbSource.close();
+
+        try {
+
+            myDbHelper.initializeDataBase();
+
+        } catch (IOException ioe) {
+
+            throw new Error("Unable to create database");
+
+        }
+
+        try {
+
+            myDbHelper.openDataBase();
+
+        } catch (SQLException sqle) {
+
+            throw sqle;
+
+
+        }
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 
 
-public abstract class Building {
+public class Building {
     public int getHitpoints() {
         return hitpoints;
     }
@@ -83,15 +83,25 @@ public abstract class Building {
         this.image = image;
     }
 
-
     private int hitpoints;
     private int cost;
+
+    public ResourceType getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(ResourceType resourceType) {
+        this.resourceType = resourceType;
+    }
+
     private ResourceType resourceType;
     private Time buildTime;
     private int level;
     private int townhallRequirement;
+    private String name;
 
     private Bitmap image;
-    private String name;
+
+    public Building(){};
 
 }
