@@ -36,11 +36,11 @@ public class Building {
         this.buildTime = buildTime;
     }
 
-    public int getLevel() {
+    public long getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(long level) {
         this.level = level;
     }
 
@@ -81,7 +81,7 @@ public class Building {
 
     private ResourceType resourceType;
     private int buildTime;
-    private int level;
+    private long level;
     private int townhallRequirement;
     private String name;
 

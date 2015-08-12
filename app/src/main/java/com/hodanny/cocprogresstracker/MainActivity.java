@@ -1,53 +1,63 @@
 package com.hodanny.cocprogresstracker;
 
-import android.database.SQLException;
+import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
 
-    public int currentTownhall = 5;
+    public int mCurrentTownhall = 5;
 
+    private BuildingDataSource mDatabase;
+    private RecyclerView mRecyclerView;
+    private MainRecyclerAdapter mMainRecyclerAdapter;
+
+    private List<Building> mUserProgress = new ArrayList<>();
+
+    private void InitViews(Context context)
+    {
+        mRecyclerView = (RecyclerView)findViewById(R.id.main_recyclerview);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+        mMainRecyclerAdapter = new MainRecyclerAdapter(mUserProgress);
+        mRecyclerView.setAdapter(mMainRecyclerAdapter);
+
+    }
+
+    private void InitDatabase()
+    {
+        DbHandler myDbHelper=new DbHandler(this);
+        try {
+
+            myDbHelper.initializeDataBase();
+            mDatabase = new BuildingDataSource(this);
+            mDatabase.open();
+            mDatabase.populateUserProgress(mCurrentTownhall);
+            mUserProgress = mDatabase.selectAllUserProgress();
+            mDatabase.close();
+
+        } catch (IOException ioe) {
+
+            throw new Error("Unable to create database");
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        DbHandler myDbHelper=new DbHandler(this);
-
-
-        try {
-
-            myDbHelper.initializeDataBase();
-            BuildingDataSource dbSource = new BuildingDataSource(this);
-            dbSource.open();
-
-            dbSource.populateUserProgress(currentTownhall);
-            dbSource.close();
-
-        } catch (IOException ioe) {
-
-            throw new Error("Unable to create database");
-
-        }
-
-        try {
-
-            myDbHelper.openDataBase();
-
-        } catch (SQLException sqle) {
-
-            throw sqle;
-
-
-        }
+        InitDatabase();
+        InitViews(this);
     }
 
     @Override

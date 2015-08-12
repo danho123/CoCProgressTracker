@@ -14,4 +14,9 @@ public class Log {
         android.util.Log.e(TAG, msg, e);
     }
 
+    public static void v(String msg)
+    {
+        android.util.Log.v(TAG,msg);
+    }
+
 }
