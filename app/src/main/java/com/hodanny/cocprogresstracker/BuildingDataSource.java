@@ -68,11 +68,12 @@ public class BuildingDataSource {
 
     public void populateUserProgress(int townhallLevel)
     {
+        database.execSQL("DELETE  FROM UserProgress");
         String MyQuery =
                 "SELECT BD._id, TH.TH" + townhallLevel + " FROM TownhallLimits as TH " +
                 "INNER JOIN Buildings as B ON TH.FK_BuildingId=B._id " +
                 "INNER JOIN BuildingDescription BD ON B._id=BD.FK_BuildingId " +
-                "WHERE Level=1 ORDER BY B.Name asc";
+                "WHERE Level=0 ORDER BY B.Name asc";
 
         Cursor cursor = database.rawQuery(MyQuery, new String[]{});
         cursor.moveToFirst();
@@ -83,8 +84,6 @@ public class BuildingDataSource {
         }
 
         cursor.close();
-
-        database.close();
         // make sure to close the cursor
     }
 }
