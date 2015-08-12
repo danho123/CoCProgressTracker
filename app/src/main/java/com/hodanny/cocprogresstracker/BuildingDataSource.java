@@ -73,6 +73,17 @@ public class BuildingDataSource {
     }
 
     /**
+     * Updates building when user performs a downgrade or upgrade on a building
+     * @param newBuilding new building description id
+     * @param id UserProgress PK
+     */
+    public void ReplaceUserProgressBuilding(int newBuilding, int id)
+    {
+        String query = String.format("UPDATE UserProgress SET FK_BuildingDescriptionId=%d WHERE _id=%d", newBuilding, id);
+        database.execSQL(query);
+    }
+
+    /**
      *  Retrieve possible downgrade and upgrades filtered by townhall and building
      * @param townhallLevel The active townhall level
      * @param building The building getting upgraded
@@ -98,6 +109,10 @@ public class BuildingDataSource {
 
     }
 
+    /**
+     * Populates UserProgress table based on TH Limits
+     * @param townhallLevel
+     */
     public void populateUserProgress(int townhallLevel)
     {
         String deleteQuery = "DELETE FROM UserProgress";
