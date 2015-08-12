@@ -1,11 +1,13 @@
-package com.hodanny.cocprogresstracker;
+package com.hodanny.cocprogresstracker.databases;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
-import android.os.Build;
+
+import com.hodanny.cocprogresstracker.models.Building;
+import com.hodanny.cocprogresstracker.utils.Log;
+import com.hodanny.cocprogresstracker.ResourceType;
 
 import java.util.ArrayList;
 import java.util.List;

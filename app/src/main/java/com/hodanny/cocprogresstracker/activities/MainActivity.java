@@ -1,4 +1,4 @@
-package com.hodanny.cocprogresstracker;
+package com.hodanny.cocprogresstracker.activities;
 
 import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
@@ -7,6 +7,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.hodanny.cocprogresstracker.activities.adapters.MainRecyclerAdapter;
+import com.hodanny.cocprogresstracker.R;
+import com.hodanny.cocprogresstracker.databases.BuildingDataSource;
+import com.hodanny.cocprogresstracker.databases.DbHandler;
+import com.hodanny.cocprogresstracker.models.Building;
 
 import java.io.IOException;
 import java.util.ArrayList;

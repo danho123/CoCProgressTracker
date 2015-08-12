@@ -1,4 +1,4 @@
-package com.hodanny.cocprogresstracker;
+package com.hodanny.cocprogresstracker.utils;
 
 /**
  * Created by dan on 8/4/2015.

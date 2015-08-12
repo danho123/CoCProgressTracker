@@ -1,9 +1,11 @@
-package com.hodanny.cocprogresstracker;
+package com.hodanny.cocprogresstracker.models;
 
 import android.graphics.Bitmap;
 
-import java.sql.Time;
-import java.util.concurrent.TimeUnit;
+import com.hodanny.cocprogresstracker.ResourceType;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * Created by dan on 7/30/2015.
@@ -88,5 +90,30 @@ public class Building {
     private Bitmap image;
 
     public Building(){};
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if(!(o instanceof Building))
+        {
+            return false;
+        }
+        if(o == this)
+        {
+            return true;
+        }
+
+        Building building = (Building)o;
+        return new EqualsBuilder().
+                append(name, building.name).
+                append(level, building.level).isEquals();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return new HashCodeBuilder(17,31).
+                append(name).append(level).toHashCode();
+    }
 
 }

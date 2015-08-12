@@ -1,4 +1,4 @@
-package com.hodanny.cocprogresstracker;
+package com.hodanny.cocprogresstracker.databases;
 
 import android.content.Context;
 import android.database.SQLException;
