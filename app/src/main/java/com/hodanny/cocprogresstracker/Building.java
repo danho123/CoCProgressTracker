@@ -28,27 +28,12 @@ public class Building {
         this.cost = cost;
     }
 
-    public Time getBuildTime() {
+    public int getBuildTime() {
         return buildTime;
     }
 
-    public void setBuildTime(String buildTime) {
-//
-//        long timeUnit = Long.parseLong((buildTime.substring(0, buildTime.length() - 1)));
-//        if(buildTime.endsWith("s"))
-//        {
-//            timeUnit = TimeUnit.SECONDS.toMillis(timeUnit);
-//        }
-//        else if(buildTime.endsWith("h"))
-//        {
-//            timeUnit = TimeUnit.HOURS.toMillis(timeUnit);
-//        }
-//        else if(buildTime.endsWith("d"))
-//        {
-//            timeUnit = TimeUnit.DAYS.toMillis(timeUnit);
-//        }
-
-        this.buildTime = new Time(1);
+    public void setBuildTime(int buildTime) {
+        this.buildTime = buildTime;
     }
 
     public int getLevel() {
@@ -95,7 +80,7 @@ public class Building {
     }
 
     private ResourceType resourceType;
-    private Time buildTime;
+    private int buildTime;
     private int level;
     private int townhallRequirement;
     private String name;

@@ -12,6 +12,9 @@ import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
+    public int currentTownhall = 5;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,15 +22,15 @@ public class MainActivity extends ActionBarActivity {
 
         DbHandler myDbHelper=new DbHandler(this);
 
-        BuildingDataSource dbSource = new BuildingDataSource(this);
-        dbSource.open();
-
-        List<Building> buildings = dbSource.getAllComments();
-        dbSource.close();
 
         try {
 
             myDbHelper.initializeDataBase();
+            BuildingDataSource dbSource = new BuildingDataSource(this);
+            dbSource.open();
+
+            dbSource.populateUserProgress(currentTownhall);
+            dbSource.close();
 
         } catch (IOException ioe) {
 

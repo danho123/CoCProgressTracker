@@ -4,8 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,39 +30,61 @@ public class BuildingDataSource {
         dbHelper.close();
     }
 
-    public List<Building> getAllComments() {
-        List<Building> comments = new ArrayList<Building>();
+    public List<Building> getAllBuildings() {
+        List<Building> buildings = new ArrayList<Building>();
 
-        Cursor cursor = database.query(dbHelper.DB_TABLE_BUILDINGS, dbHelper.DB_TABLE_BUILDINGS_COLUMNS, null, null, null, null, null);
+        Cursor cursor = database.query(dbHelper.DB_TABLE_BUILDINGDESCRIPTIONS, dbHelper.DB_TABLE_BUILDINGDESCRIPTIONS_COLUMNS, null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            Building comment = cursorToComment(cursor);
-            comments.add(comment);
+            Building building = cursorToBuilding(cursor);
+            buildings.add(building);
             cursor.moveToNext();
         }
         // make sure to close the cursor
         cursor.close();
-        return comments;
+        return buildings;
     }
 
-    private Building cursorToComment(Cursor cursor) {
-        Building comment = new Building();
+    private Building cursorToBuilding(Cursor cursor) {
+        Building building = new Building();
 
-        comment.setName(cursor.getString(1));
-        comment.setLevel(cursor.getInt(2));
-        comment.setHitpoints(cursor.getInt(3));
-        comment.setCost(cursor.getInt(4));
+        building.setName(cursor.getString(1));
+        building.setLevel(cursor.getInt(2));
+        building.setHitpoints(cursor.getInt(3));
+        building.setCost(cursor.getInt(4));
 
         String resourceType = cursor.getString(5);
 
-        comment.setResourceType(ResourceType.GOLD);
+        building.setResourceType(ResourceType.GOLD);
 
         int timeInSeconds = cursor.getInt(6);
-        //comment.setBuildTime());
-        comment.setTownhallRequirement(cursor.getInt(7));
+        building.setBuildTime(timeInSeconds);
+        building.setTownhallRequirement(cursor.getInt(7));
 
 
-        return comment;
+        return building;
+    }
+
+    public void populateUserProgress(int townhallLevel)
+    {
+        String MyQuery =
+                "SELECT BD._id, TH.TH" + townhallLevel + " FROM TownhallLimits as TH " +
+                "INNER JOIN Buildings as B ON TH.FK_BuildingId=B._id " +
+                "INNER JOIN BuildingDescription BD ON B._id=BD.FK_BuildingId " +
+                "WHERE Level=1 ORDER BY B.Name asc";
+
+        Cursor cursor = database.rawQuery(MyQuery, new String[]{});
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            String sql = "INSERT INTO UserProgress ( FK_BuildingDescriptionId, Count ) VALUES ( " + cursor.getLong(0) + "," + cursor.getLong(1) + ")";
+            database.execSQL(sql);
+            cursor.moveToNext();
+        }
+
+        cursor.close();
+
+        database.close();
+        // make sure to close the cursor
     }
 }
