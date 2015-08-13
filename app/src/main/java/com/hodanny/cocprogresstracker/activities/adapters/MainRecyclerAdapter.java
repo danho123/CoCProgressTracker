@@ -24,14 +24,14 @@ import java.util.TreeMap;
 public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapter.BuildingViewHolder>
 {
     List<Building> buildings;
-    TreeMap<String, List<Building>> buildingsMap;
+    TreeMap<String, TreeMap<Building,Integer>> buildingsMap;
     Context mContext;
     public MainRecyclerAdapter(List<Building> building)
     {
         this.buildings = building;
     }
 
-    public MainRecyclerAdapter(TreeMap<String, List<Building>> building, Context context)
+    public MainRecyclerAdapter(TreeMap<String,TreeMap<Building,Integer>> building, Context context)
     {
         this.buildingsMap = building;
         mContext = context;

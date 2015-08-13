@@ -7,13 +7,15 @@ import com.hodanny.cocprogresstracker.ResourceType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.Comparator;
+
 /**
  * Created by dan on 7/30/2015.
  */
 
 
 
-public class Building {
+public class Building implements Comparable<Building> {
     public int getHitpoints() {
         return hitpoints;
     }
@@ -116,4 +118,8 @@ public class Building {
                 append(name).append(level).toHashCode();
     }
 
+    @Override
+    public int compareTo(Building another) {
+        return (int)(level - another.level);
+    }
 }

@@ -28,7 +28,7 @@ public class MainActivity extends ActionBarActivity {
     private RecyclerView mRecyclerView;
     private MainRecyclerAdapter mMainRecyclerAdapter;
 
-    private TreeMap<String, List<Building>> mUserProgress = new TreeMap<String, List<Building>>();
+    private TreeMap<String, TreeMap<Building,Integer>> mUserProgress = new TreeMap<>();
 
     private void InitViews(Context context)
     {

@@ -54,22 +54,6 @@ public class BuildingDataSource {
         return building;
     }
 
-    public List<Building> selectAllUserProgress()
-    {
-        List<Building> buildings = new ArrayList<>();
-        String query = "SELECT B.Name, BD.Level FROM UserProgress UP Inner Join BuildingDescriptions BD ON UP.FK_BuildingDescriptionId=BD._id INNER JOIN Buildings B ON B._id=BD.FK_BuildingID WHERE B.Name <> \"Wall\" ORDER BY B.Name asc";
-        Cursor cursor = database.rawQuery(query, new String[]{});
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            Building building = new Building();
-            building.setName(cursor.getString(0));
-            building.setLevel(cursor.getLong(1));
-            buildings.add(building);
-            cursor.moveToNext();
-        }
-        return buildings;
-    }
-
     public TreeMap<String, TreeMap<Building, Integer>> selectAllUserProgress2()
     {
         //key - BuildingName
@@ -77,14 +61,14 @@ public class BuildingDataSource {
         //      key - building
         //      value - count
         TreeMap<String, TreeMap<Building, Integer>> buildings = new TreeMap<String, TreeMap<Building, Integer>>();
-        String query = "SELECT B.Name, BD.Level FROM UserProgress UP Inner Join BuildingDescriptions BD ON UP.FK_BuildingDescriptionId=BD._id INNER JOIN Buildings B ON B._id=BD.FK_BuildingID ORDER BY B.Name asc";
+        String query = "SELECT B.Name, BD.Level, COUNT(*) as Count FROM UserProgress UP Inner Join BuildingDescriptions BD ON UP.FK_BuildingDescriptionId=BD._id  INNER JOIN Buildings B ON B._id=BD.FK_BuildingID GROUP BY B.Name, BD.Level ORDER BY B.Name asc";
         Cursor cursor = database.rawQuery(query, new String[]{});
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Building building = new Building();
             String buildingName = cursor.getString(0);
             long buildingLevel = cursor.getLong(1);
-            long count = 0; //TODO:: modify query to aggregate by name and level in order to get count
+            long count = cursor.getLong(2);
 
             building.setName(buildingName);
             building.setLevel(buildingLevel);
