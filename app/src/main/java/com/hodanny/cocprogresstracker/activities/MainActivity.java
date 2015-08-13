@@ -92,9 +92,5 @@ public class MainActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    void showDialog() {
-        // Create the fragment and show it as a dialog.
-        DialogFragment newFragment = new BuildingEditFragment();
-        newFragment.show(getSupportFragmentManager(), "dialog");
-    }
+
 }

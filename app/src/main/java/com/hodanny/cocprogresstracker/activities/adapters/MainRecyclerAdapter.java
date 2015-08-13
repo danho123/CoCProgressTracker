@@ -1,6 +1,9 @@
 package com.hodanny.cocprogresstracker.activities.adapters;
 
+import android.app.Fragment;
 import android.content.Context;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hodanny.cocprogresstracker.R;
+import com.hodanny.cocprogresstracker.fragments.BuildingEditFragment;
 import com.hodanny.cocprogresstracker.models.Building;
 
 import org.w3c.dom.Text;
@@ -58,7 +62,9 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         holder.mEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
+                // Create the fragment and show it as a dialog.
+                DialogFragment newFragment = new BuildingEditFragment();
+                newFragment.show(((FragmentActivity)v.getContext()).getSupportFragmentManager(), "dialog");
             }
         });
     }
