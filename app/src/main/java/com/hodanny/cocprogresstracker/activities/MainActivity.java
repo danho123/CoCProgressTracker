@@ -17,6 +17,7 @@ import com.hodanny.cocprogresstracker.models.Building;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -27,7 +28,7 @@ public class MainActivity extends ActionBarActivity {
     private RecyclerView mRecyclerView;
     private MainRecyclerAdapter mMainRecyclerAdapter;
 
-    private List<Building> mUserProgress = new ArrayList<>();
+    private TreeMap<String, List<Building>> mUserProgress = new TreeMap<String, List<Building>>();
 
     private void InitViews(Context context)
     {
@@ -35,7 +36,7 @@ public class MainActivity extends ActionBarActivity {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        mMainRecyclerAdapter = new MainRecyclerAdapter(mUserProgress);
+        mMainRecyclerAdapter = new MainRecyclerAdapter(mUserProgress, this);
         mRecyclerView.setAdapter(mMainRecyclerAdapter);
 
     }
@@ -49,7 +50,7 @@ public class MainActivity extends ActionBarActivity {
             mDatabase = new BuildingDataSource(this);
             mDatabase.open();
             mDatabase.populateUserProgress(mCurrentTownhall);
-            mUserProgress = mDatabase.selectAllUserProgress();
+            mUserProgress = mDatabase.selectAllUserProgress2();
             mDatabase.close();
 
         } catch (IOException ioe) {

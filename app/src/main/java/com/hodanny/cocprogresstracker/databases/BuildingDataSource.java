@@ -11,6 +11,7 @@ import com.hodanny.cocprogresstracker.ResourceType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Created by dan on 8/11/2015.
@@ -18,7 +19,7 @@ import java.util.List;
 public class BuildingDataSource {
 
     // Database fields
-    private SQLiteDatabase database;
+    private static SQLiteDatabase database;
     private DbHandler dbHelper;
 
     public BuildingDataSource(Context context) {
@@ -68,6 +69,41 @@ public class BuildingDataSource {
         }
         return buildings;
     }
+
+    public TreeMap<String, TreeMap<Building, Integer>> selectAllUserProgress2()
+    {
+        //key - BuildingName
+        //value - TreeMap
+        //      key - building
+        //      value - count
+        TreeMap<String, TreeMap<Building, Integer>> buildings = new TreeMap<String, TreeMap<Building, Integer>>();
+        String query = "SELECT B.Name, BD.Level FROM UserProgress UP Inner Join BuildingDescriptions BD ON UP.FK_BuildingDescriptionId=BD._id INNER JOIN Buildings B ON B._id=BD.FK_BuildingID ORDER BY B.Name asc";
+        Cursor cursor = database.rawQuery(query, new String[]{});
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Building building = new Building();
+            String buildingName = cursor.getString(0);
+            long buildingLevel = cursor.getLong(1);
+            long count = 0; //TODO:: modify query to aggregate by name and level in order to get count
+
+            building.setName(buildingName);
+            building.setLevel(buildingLevel);
+
+            if(buildings.containsKey(buildingName))
+            {
+                buildings.get(buildingName).put(building, (int)count);
+            }
+            else
+            {
+               TreeMap<Building,Integer> map = new TreeMap<>();
+                map.put(building, (int)count);
+                buildings.put(buildingName, map);
+            }
+            cursor.moveToNext();
+        }
+        return buildings;
+    }
+
 
     public int getBuildingDescriptionId(Building building)
     {
