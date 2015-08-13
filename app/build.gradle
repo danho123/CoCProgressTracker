@@ -20,6 +20,7 @@ android {
     sourceSets {
         main {
             java.srcDirs = ['src/main/java', 'src/main/java/com/test', 'src/main/java/com/hodanny/cocprogresstracker/database']
+            res.srcDirs = ['src/main/res', 'src/main/res/anim']
         }
     }
 }

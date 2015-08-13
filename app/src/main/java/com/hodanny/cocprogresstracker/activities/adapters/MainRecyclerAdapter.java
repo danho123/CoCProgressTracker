@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +16,7 @@ import com.hodanny.cocprogresstracker.models.Building;
 import org.w3c.dom.Text;
 
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -23,13 +24,9 @@ import java.util.TreeMap;
  */
 public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapter.BuildingViewHolder>
 {
-    List<Building> buildings;
     TreeMap<String, TreeMap<Building,Integer>> buildingsMap;
+
     Context mContext;
-    public MainRecyclerAdapter(List<Building> building)
-    {
-        this.buildings = building;
-    }
 
     public MainRecyclerAdapter(TreeMap<String,TreeMap<Building,Integer>> building, Context context)
     {
@@ -47,10 +44,23 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     @Override
     public void onBindViewHolder(BuildingViewHolder holder, int position) {
         String key = buildingsMap.keySet().toArray()[position].toString();
-        //Building building = buildings.get(position);
-//        holder.mBuildingLevel.setText("Level " + building.getLevel());
+
         holder.mBuildingName.setText(key + " " + buildingsMap.get(key).size());
-//        holder.mImage.setImageResource(R.mipmap.ic_launcher);
+        holder.mLinearLayout.removeAllViews();
+
+        for (Map.Entry<Building, Integer> entry : buildingsMap.get(key).entrySet()) {
+            View line = LayoutInflater.from(mContext).inflate(R.layout.building_item, null);
+            TextView textView = (TextView)line.findViewById(R.id.building_item_name);
+            textView.setText("Level " + entry.getKey().getLevel() + " - " + "x" + entry.getValue());
+            holder.mLinearLayout.addView(line);
+        }
+
+        holder.mEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -63,21 +73,15 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         CardView mCardView;
         TextView mBuildingName;
         TextView mEdit;
-        ImageView mImage;
-
+        LinearLayout mLinearLayout;
+        LayoutInflater mLayoutInflater;
         public BuildingViewHolder(View view)
         {
             super(view);
             mCardView = (CardView)view.findViewById(R.id.building_cardview);
             mEdit = (TextView)view.findViewById(R.id.card_edit);
             mBuildingName = (TextView)view.findViewById(R.id.building_name);
-
-            mEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(v.getContext(), ((TextView)v).getText(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            mLinearLayout = (LinearLayout)view.findViewById(R.id.building_linearlayout);
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.hodanny.cocprogresstracker.activities;
 
 import android.content.Context;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +14,7 @@ import com.hodanny.cocprogresstracker.activities.adapters.MainRecyclerAdapter;
 import com.hodanny.cocprogresstracker.R;
 import com.hodanny.cocprogresstracker.databases.BuildingDataSource;
 import com.hodanny.cocprogresstracker.databases.DbHandler;
+import com.hodanny.cocprogresstracker.fragments.BuildingEditFragment;
 import com.hodanny.cocprogresstracker.models.Building;
 
 import java.io.IOException;
@@ -20,7 +23,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends FragmentActivity {
 
     public int mCurrentTownhall = 5;
 
@@ -87,5 +90,11 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    void showDialog() {
+        // Create the fragment and show it as a dialog.
+        DialogFragment newFragment = new BuildingEditFragment();
+        newFragment.show(getSupportFragmentManager(), "dialog");
     }
 }
