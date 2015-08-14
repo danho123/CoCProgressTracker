@@ -1,24 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#efefef"
-    android:gravity="center"
-    android:orientation="vertical" >
+    android:layout_width="300dp"
+    android:layout_height="400dp"
+    android:orientation="vertical"
+    android:layout_gravity="center">
 
-    <EditText
-        android:id="@+id/editText1"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/upgrade_fragment_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10" >
-
-        <requestFocus />
-    </EditText>
-
+        android:orientation="horizontal">
     <Button
-        android:id="@+id/button1"
-        android:layout_width="fill_parent"
+        android:id="@+id/button_cancel"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Submit" />
+        android:layout_weight="1"
+        android:text="@android:string/cancel" />
+    <Button
+        android:id="@+id/button_submit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@android:string/ok" />
+    </LinearLayout>
+
 
 </LinearLayout>

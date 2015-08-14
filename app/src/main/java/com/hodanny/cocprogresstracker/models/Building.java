@@ -1,6 +1,8 @@
 package com.hodanny.cocprogresstracker.models;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.hodanny.cocprogresstracker.ResourceType;
 
@@ -15,7 +17,7 @@ import java.util.Comparator;
 
 
 
-public class Building implements Comparable<Building> {
+public class Building implements Comparable<Building>, Parcelable {
     public int getHitpoints() {
         return hitpoints;
     }
@@ -72,8 +74,7 @@ public class Building implements Comparable<Building> {
         this.image = image;
     }
 
-    private int hitpoints;
-    private int cost;
+
 
     public ResourceType getResourceType() {
         return resourceType;
@@ -88,7 +89,8 @@ public class Building implements Comparable<Building> {
     private long level;
     private int townhallRequirement;
     private String name;
-
+    private int hitpoints;
+    private int cost;
     private Bitmap image;
 
     public Building(){};
@@ -121,5 +123,22 @@ public class Building implements Comparable<Building> {
     @Override
     public int compareTo(Building another) {
         return (int)(level - another.level);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(image,0);
+        dest.writeInt(buildTime);
+        dest.writeLong(level);
+        dest.writeInt(townhallRequirement);
+        dest.writeString(name);
+        dest.writeInt(hitpoints);
+        dest.writeInt(cost);
+        dest.writeSerializable(resourceType);
     }
 }

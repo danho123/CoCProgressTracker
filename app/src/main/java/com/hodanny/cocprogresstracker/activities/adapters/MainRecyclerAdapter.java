@@ -29,7 +29,7 @@ import java.util.TreeMap;
 public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapter.BuildingViewHolder>
 {
     TreeMap<String, TreeMap<Building,Integer>> buildingsMap;
-
+    ClickListener mClickListener;
     Context mContext;
 
     public MainRecyclerAdapter(TreeMap<String,TreeMap<Building,Integer>> building, Context context)
@@ -58,15 +58,6 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
             textView.setText("Level " + entry.getKey().getLevel() + " - " + "x" + entry.getValue());
             holder.mLinearLayout.addView(line);
         }
-
-        holder.mEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create the fragment and show it as a dialog.
-                DialogFragment newFragment = new BuildingEditFragment();
-                newFragment.show(((FragmentActivity)v.getContext()).getSupportFragmentManager(), "dialog");
-            }
-        });
     }
 
     @Override
@@ -74,13 +65,12 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         return buildingsMap.size();
     }
 
-    public static class BuildingViewHolder extends RecyclerView.ViewHolder
+    class BuildingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         CardView mCardView;
         TextView mBuildingName;
         TextView mEdit;
         LinearLayout mLinearLayout;
-        LayoutInflater mLayoutInflater;
         public BuildingViewHolder(View view)
         {
             super(view);
@@ -88,6 +78,22 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
             mEdit = (TextView)view.findViewById(R.id.card_edit);
             mBuildingName = (TextView)view.findViewById(R.id.building_name);
             mLinearLayout = (LinearLayout)view.findViewById(R.id.building_linearlayout);
+
+            mEdit.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            mClickListener.itemClicked(v,getPosition());
+        }
+    }
+
+    public interface ClickListener{
+        void itemClicked(View v, int pos);
+    }
+
+    public void setClickListener(ClickListener clickListener)
+    {
+        mClickListener = clickListener;
     }
 }

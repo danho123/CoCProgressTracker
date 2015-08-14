@@ -9,6 +9,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.hodanny.cocprogresstracker.activities.adapters.MainRecyclerAdapter;
 import com.hodanny.cocprogresstracker.R;
@@ -20,15 +22,17 @@ import com.hodanny.cocprogresstracker.models.Building;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements MainRecyclerAdapter.ClickListener {
 
     public int mCurrentTownhall = 5;
 
     private BuildingDataSource mDatabase;
     private RecyclerView mRecyclerView;
+    private TextView mTextViewTownhall;
     private MainRecyclerAdapter mMainRecyclerAdapter;
 
     private TreeMap<String, TreeMap<Building,Integer>> mUserProgress = new TreeMap<>();
@@ -40,7 +44,13 @@ public class MainActivity extends FragmentActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         mMainRecyclerAdapter = new MainRecyclerAdapter(mUserProgress, this);
+        mMainRecyclerAdapter.setClickListener(this);
         mRecyclerView.setAdapter(mMainRecyclerAdapter);
+
+
+
+        mTextViewTownhall = (TextView)findViewById(R.id.main_townhall_text);
+        mTextViewTownhall.setText(String.format("Townhall %d", mCurrentTownhall));
 
     }
 
@@ -93,4 +103,17 @@ public class MainActivity extends FragmentActivity {
     }
 
 
+    @Override
+    public void itemClicked(View v, int pos) {
+        Bundle bundle = new Bundle();
+
+        ArrayList<Building> buildings = new ArrayList<>();
+
+        TreeMap<Building,Integer> treeMap = mUserProgress.get(mUserProgress.keySet().toArray()[pos]); //get keyset of nested treemap
+
+        bundle.putParcelableArrayList("buildings", buildings);
+        DialogFragment newFragment = new BuildingEditFragment();
+        newFragment.setArguments(bundle);
+        newFragment.show(((FragmentActivity)v.getContext()).getSupportFragmentManager(), "dialog");
+    }
 }
