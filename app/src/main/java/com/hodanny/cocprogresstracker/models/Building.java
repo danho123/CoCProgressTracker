@@ -101,6 +101,25 @@ public class Building implements Comparable<Building>, Parcelable {
     private String name;
     private int hitpoints;
     private int cost;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(int entityId) {
+        this.entityId = entityId;
+    }
+
+    private int entityId;
+
     private int id;
     private String image;
 

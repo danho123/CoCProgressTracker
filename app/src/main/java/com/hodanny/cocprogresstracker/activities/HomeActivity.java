@@ -25,7 +25,7 @@ import java.util.HashMap;
 public class HomeActivity extends FragmentActivity {
 
 
-    private BuildingDataSource mDatabase;
+    public static BuildingDataSource mDatabase;
     private PagerSlidingTabStrip tabs;
     private ViewPager pager;
     private MyPagerAdapter adapter;
@@ -43,10 +43,9 @@ public class HomeActivity extends FragmentActivity {
             myDbHelper.initializeDataBase();
             mDatabase = new BuildingDataSource(this);
             mDatabase.open();
-            mDatabase.populateUserProgress(mCurrentTownhall, true);
+            mDatabase.populateUserProgress(mCurrentTownhall, false);
             mMap = mDatabase.selectAllUserProgress2();
             mMaxMap = mDatabase.getEntityMaxLevelMap(mCurrentTownhall);
-            mDatabase.close();
 
         } catch (IOException ioe) {
 

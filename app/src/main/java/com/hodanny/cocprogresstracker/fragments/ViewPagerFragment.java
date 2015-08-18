@@ -63,10 +63,12 @@ public class ViewPagerFragment extends Fragment implements ViewPagerRecyclerAdap
         if(v.getTag().equals("upgrade") && building.getLevel() < HomeActivity.mMaxMap.get(building.getName()))
         {
             building.upgrade();
+            HomeActivity.mDatabase.updateUserProgressEntity(building);
         }
         if(v.getTag().equals("downgrade") && building.getLevel() > 0)
         {
             building.downgrade();
+            HomeActivity.mDatabase.updateUserProgressEntity(building);
         }
         mAdapter.notifyDataSetChanged();
     }

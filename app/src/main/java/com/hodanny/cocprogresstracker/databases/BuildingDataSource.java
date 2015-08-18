@@ -56,26 +56,30 @@ public class BuildingDataSource {
     public HashMap<String, ArrayList<Building>> selectAllUserProgress2()
     {
         HashMap<String, ArrayList<Building>> buildings = new HashMap<>();
-        String query = "SELECT E.Name, EL.Level, E.Type FROM UserProgress UP Inner Join EntityLevels EL ON UP.EntityLevelId=EL._id  INNER JOIN Entities E ON E._id=EL.EntityId";
+        String query = "SELECT UP._id, EL.EntityId, E.Name, EL.Level, E.Type FROM UserProgress UP Inner Join EntityLevels EL ON UP.EntityLevelId=EL._id  INNER JOIN Entities E ON E._id=EL.EntityId";
         Cursor cursor = database.rawQuery(query, new String[]{});
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Building building = new Building();
-            String buildingName = cursor.getString(0);
-            long buildingLevel = cursor.getLong(1);
 
+            String buildingName = cursor.getString(2);
+            long buildingLevel = cursor.getLong(3);
+            String buildingType = cursor.getString(4);
+
+            building.setId(cursor.getInt(0));
+            building.setEntityId(cursor.getInt(1));
             building.setName(buildingName);
             building.setLevel(buildingLevel);
 
-            if(buildings.containsKey(cursor.getString(2)))
+            if(buildings.containsKey(buildingType))
             {
-                buildings.get(cursor.getString(2)).add(building);
+                buildings.get(buildingType).add(building);
             }
             else
             {
                ArrayList<Building> newList = new ArrayList<>();
                newList.add(building);
-               buildings.put(cursor.getString(2), newList);
+               buildings.put(buildingType, newList);
             }
             cursor.moveToNext();
         }
@@ -88,15 +92,14 @@ public class BuildingDataSource {
      */
     public void populateUserProgress(int townhallLevel, boolean overwrite)
     {
-//        Cursor cur = database.rawQuery("SELECT COUNT(*) FROM UserProgress", null);
-//        if (cur != null) {
-//            cur.moveToFirst();                       // Always one row returned.
-//            if (cur.getInt (0) != 0 && !overwrite) {               // if there are records already then don't need to populate
-//                return;
-//            }
-//        }
-//        cur.close();
+        Cursor cur = database.rawQuery("SELECT COUNT(*) FROM UserProgress", null);
+        if (cur != null) {
+            cur.moveToFirst();                       // Always one row returned.
+            if (cur.getInt (0) != 0 && !overwrite) {               // if there are records already then don't need to populate
 
+                return;
+            }
+        }
         String deleteQuery = "DELETE FROM UserProgress";
         database.execSQL(deleteQuery);
         String MyQuery =
@@ -116,9 +119,13 @@ public class BuildingDataSource {
         cursor.close();
     }
 
-    public void updateBuilding(Building building)
+    public void updateUserProgressEntity(Building building)
     {
-        database.execSQL(String.format("UPDATE UserProgress SET entityLevelId=%d WHERE id=%d"));
+        String selectQuery = "SELECT EntityLevels._id FROM EntityLevels WHERE EntityLevels.EntityId=? AND EntityLevels.Level=?";
+        Cursor cursor = database.rawQuery(selectQuery, new String[]{String.valueOf(building.getEntityId()), String.valueOf(building.getLevel())});
+        cursor.moveToFirst();
+        String updateQuery = String.format("UPDATE UserProgress SET entityLevelId=%d WHERE _id=%d", cursor.getInt(0), building.getId());
+        database.execSQL(updateQuery);
     }
 
     public HashMap<String,Integer> getEntityMaxLevelMap(int townhallLevel)
