@@ -120,4 +120,19 @@ public class BuildingDataSource {
     {
         database.execSQL(String.format("UPDATE UserProgress SET entityLevelId=%d WHERE id=%d"));
     }
+
+    public HashMap<String,Integer> getEntityMaxLevelMap(int townhallLevel)
+    {
+        HashMap<String,Integer> map = new HashMap<>();
+        String query = "SELECT Entities.Name, MAX(Level) FROM EntityLevels INNER JOIN Entities ON Entities._id=EntityLevels.EntityId WHERE EntityLevels.Requirement <= ? GROUP BY EntityId Order BY EntityId asc";
+        Cursor cursor = database.rawQuery(query, new String[]{String.valueOf(townhallLevel)});
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            map.put(cursor.getString(0), cursor.getInt(1));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return map;
+    }
+
 }

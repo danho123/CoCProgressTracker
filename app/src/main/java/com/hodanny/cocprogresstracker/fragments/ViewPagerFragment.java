@@ -9,16 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hodanny.cocprogresstracker.R;
+import com.hodanny.cocprogresstracker.activities.HomeActivity;
 import com.hodanny.cocprogresstracker.fragments.adapters.ViewPagerRecyclerAdapter;
 import com.hodanny.cocprogresstracker.models.Building;
 import com.hodanny.cocprogresstracker.utils.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ViewPagerFragment extends Fragment implements ViewPagerRecyclerAdapter.ClickListener {
-    private static final String ARG_POSITION = "position";
-
-    private int position;
 
     private RecyclerView mRecyclerView;
     private ViewPagerRecyclerAdapter mAdapter;
@@ -60,11 +59,12 @@ public class ViewPagerFragment extends Fragment implements ViewPagerRecyclerAdap
     @Override
     public void itemClicked(View v, int pos) {
         Building building = buildings.get(pos);
-        if(v.getTag().equals("upgrade"))
+
+        if(v.getTag().equals("upgrade") && building.getLevel() < HomeActivity.mMaxMap.get(building.getName()))
         {
             building.upgrade();
         }
-        if(v.getTag().equals("downgrade"))
+        if(v.getTag().equals("downgrade") && building.getLevel() > 0)
         {
             building.downgrade();
         }

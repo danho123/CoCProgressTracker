@@ -32,6 +32,7 @@ public class HomeActivity extends FragmentActivity {
 
     private int mCurrentTownhall = 5;
     private HashMap<String, ArrayList<Building>> mMap;
+    public static HashMap<String, Integer> mMaxMap;
 
 
     private void InitDatabase()
@@ -44,6 +45,7 @@ public class HomeActivity extends FragmentActivity {
             mDatabase.open();
             mDatabase.populateUserProgress(mCurrentTownhall, true);
             mMap = mDatabase.selectAllUserProgress2();
+            mMaxMap = mDatabase.getEntityMaxLevelMap(mCurrentTownhall);
             mDatabase.close();
 
         } catch (IOException ioe) {
