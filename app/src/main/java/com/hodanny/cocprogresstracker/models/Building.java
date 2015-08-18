@@ -66,11 +66,11 @@ public class Building implements Comparable<Building>, Parcelable {
         this.name = name;
     }
 
-    public Bitmap getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(Bitmap image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -84,6 +84,16 @@ public class Building implements Comparable<Building>, Parcelable {
         this.resourceType = resourceType;
     }
 
+    public void downgrade()
+    {
+        level--;
+    }
+
+    public void upgrade()
+    {
+        level++;
+    }
+
     private ResourceType resourceType;
     private int buildTime;
     private long level;
@@ -91,7 +101,7 @@ public class Building implements Comparable<Building>, Parcelable {
     private String name;
     private int hitpoints;
     private int cost;
-    private Bitmap image;
+    private String image;
 
     public Building(){};
 
@@ -132,7 +142,7 @@ public class Building implements Comparable<Building>, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(image,0);
+        dest.writeString(image);
         dest.writeInt(buildTime);
         dest.writeLong(level);
         dest.writeInt(townhallRequirement);
