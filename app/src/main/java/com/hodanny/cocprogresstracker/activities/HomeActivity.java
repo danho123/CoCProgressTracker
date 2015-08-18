@@ -42,7 +42,7 @@ public class HomeActivity extends FragmentActivity {
             myDbHelper.initializeDataBase();
             mDatabase = new BuildingDataSource(this);
             mDatabase.open();
-            mDatabase.populateUserProgress(mCurrentTownhall);
+            mDatabase.populateUserProgress(mCurrentTownhall, true);
             mMap = mDatabase.selectAllUserProgress2();
             mDatabase.close();
 

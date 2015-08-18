@@ -20,15 +20,6 @@ public class DbHandler extends SQLiteOpenHelper {
     private static String DB_NAME = "coc.db";
     private static int DB_VERSION = 1;
 
-    public final static String DB_TABLE_BUILDINGDESCRIPTIONS = "BuildingDescription";
-    public final static String[] DB_TABLE_BUILDINGDESCRIPTIONS_COLUMNS = {"_id, Name, Level, Hitpoints, Cost, ResourceType, TimeInSeconds, Requirement"};
-
-    public final static String DB_TABLE_THLIMITS = "TownhallLimits";
-
-    public final static String DB_TABLE_USERPROGRESS = "UserProgress";
-
-    public final static String DB_TABLE_BUILDINGS = "Buildings";
-
     private boolean createDatabase = false;
     private boolean upgradeDatabase = false;
 

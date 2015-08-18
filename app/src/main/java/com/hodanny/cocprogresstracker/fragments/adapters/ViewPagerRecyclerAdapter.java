@@ -1,6 +1,5 @@
 package com.hodanny.cocprogresstracker.fragments.adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,16 +10,17 @@ import android.widget.TextView;
 import com.hodanny.cocprogresstracker.R;
 import com.hodanny.cocprogresstracker.models.Building;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
+
+import butterknife.OnClick;
 
 /**
  * Created by dan on 8/13/2015.
  */
-public class ViewPagerRecyclerAdapter extends RecyclerView.Adapter<ViewPagerRecyclerAdapter.ViewHolder>
+public class ViewPagerRecyclerAdapter extends RecyclerView.Adapter<ViewPagerRecyclerAdapter.EntityViewHolder>
 {
     List<Building> buildings;
+    ClickListener clickListener;
 
     public ViewPagerRecyclerAdapter(List<Building> buildings)
     {
@@ -28,44 +28,63 @@ public class ViewPagerRecyclerAdapter extends RecyclerView.Adapter<ViewPagerRecy
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.upgrades_card, parent, false);
-        ViewHolder bvh = new ViewHolder(v);
+    public EntityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.entity_card, parent, false);
+        EntityViewHolder bvh = new EntityViewHolder(v);
         return bvh;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(EntityViewHolder holder, final int position) {
         holder.mBuildingName.setText(buildings.get(position).getName());
-
-        holder.mDowngrade.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                buildings.get(position).downgrade();
-                notifyDataSetChanged();
-            }
-        });
+        holder.mBuildingLevel.setText(buildings.get(position).getLevel() + "");
     }
+
+    public void setClickListener(ClickListener clickListener)
+    {
+        this.clickListener = clickListener;
+    }
+
 
     @Override
     public int getItemCount() {
         return buildings.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder
+    public class EntityViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         TextView mBuildingName;
         TextView mBuildingLevel;
         Button mUpgrade;
         Button mDowngrade;
-        public ViewHolder(View view)
+        public EntityViewHolder(View view)
         {
             super(view);
             mBuildingName = (TextView)view.findViewById(R.id.upgrade_card_name);
             mUpgrade = (Button)view.findViewById(R.id.button_upgrade);
+            mUpgrade.setTag("upgrade");
+
+
             mDowngrade = (Button)view.findViewById(R.id.button_downgrade);
+            mDowngrade.setTag("downgrade");
+
             mBuildingLevel = (TextView)view.findViewById(R.id.upgrades_card_level);
+
+            mUpgrade.setOnClickListener(this);
+            mDowngrade.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            if(clickListener !=null)
+            {
+                clickListener.itemClicked(v, getPosition());
+            }
+        }
+    }
+
+    public interface ClickListener{
+        public void itemClicked(View v, int pos);
     }
 }
 

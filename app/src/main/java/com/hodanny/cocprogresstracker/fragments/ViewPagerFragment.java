@@ -1,28 +1,21 @@
 package com.hodanny.cocprogresstracker.fragments;
 
-import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.TextView;
-import android.widget.FrameLayout.LayoutParams;
 
 import com.hodanny.cocprogresstracker.R;
 import com.hodanny.cocprogresstracker.fragments.adapters.ViewPagerRecyclerAdapter;
 import com.hodanny.cocprogresstracker.models.Building;
+import com.hodanny.cocprogresstracker.utils.Log;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class ViewPagerFragment extends Fragment {
+public class ViewPagerFragment extends Fragment implements ViewPagerRecyclerAdapter.ClickListener {
     private static final String ARG_POSITION = "position";
 
     private int position;
@@ -57,9 +50,24 @@ public class ViewPagerFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         mAdapter = new ViewPagerRecyclerAdapter(buildings);
+        mAdapter.setClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
 
         return v;
+    }
+
+    @Override
+    public void itemClicked(View v, int pos) {
+        Building building = buildings.get(pos);
+        if(v.getTag().equals("upgrade"))
+        {
+            building.upgrade();
+        }
+        if(v.getTag().equals("downgrade"))
+        {
+            building.downgrade();
+        }
+        mAdapter.notifyDataSetChanged();
     }
 }

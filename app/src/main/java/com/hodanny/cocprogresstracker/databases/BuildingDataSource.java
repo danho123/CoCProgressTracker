@@ -50,17 +50,11 @@ public class BuildingDataSource {
         int timeInSeconds = cursor.getInt(6);
         building.setBuildTime(timeInSeconds);
         building.setTownhallRequirement(cursor.getInt(7));
-
-
         return building;
     }
 
     public HashMap<String, ArrayList<Building>> selectAllUserProgress2()
     {
-        //key - BuildingName
-        //value - TreeMap
-        //      key - building
-        //      value - count
         HashMap<String, ArrayList<Building>> buildings = new HashMap<>();
         String query = "SELECT E.Name, EL.Level, E.Type FROM UserProgress UP Inner Join EntityLevels EL ON UP.EntityLevelId=EL._id  INNER JOIN Entities E ON E._id=EL.EntityId";
         Cursor cursor = database.rawQuery(query, new String[]{});
@@ -92,8 +86,17 @@ public class BuildingDataSource {
      * Populates UserProgress table based on TH Limits
      * @param townhallLevel
      */
-    public void populateUserProgress(int townhallLevel)
+    public void populateUserProgress(int townhallLevel, boolean overwrite)
     {
+//        Cursor cur = database.rawQuery("SELECT COUNT(*) FROM UserProgress", null);
+//        if (cur != null) {
+//            cur.moveToFirst();                       // Always one row returned.
+//            if (cur.getInt (0) != 0 && !overwrite) {               // if there are records already then don't need to populate
+//                return;
+//            }
+//        }
+//        cur.close();
+
         String deleteQuery = "DELETE FROM UserProgress";
         database.execSQL(deleteQuery);
         String MyQuery =
@@ -110,8 +113,11 @@ public class BuildingDataSource {
            }
            cursor.moveToNext();
         }
-
         cursor.close();
-        // make sure to close the cursor
+    }
+
+    public void updateBuilding(Building building)
+    {
+        database.execSQL(String.format("UPDATE UserProgress SET entityLevelId=%d WHERE id=%d"));
     }
 }

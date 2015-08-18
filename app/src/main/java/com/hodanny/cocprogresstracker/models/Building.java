@@ -101,6 +101,7 @@ public class Building implements Comparable<Building>, Parcelable {
     private String name;
     private int hitpoints;
     private int cost;
+    private int id;
     private String image;
 
     public Building(){};
