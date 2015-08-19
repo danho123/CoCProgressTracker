@@ -35,28 +35,10 @@ public class BuildingDataSource {
         dbHelper.close();
     }
 
-    private Building cursorToBuilding(Cursor cursor) {
-        Building building = new Building();
-
-        building.setName(cursor.getString(1));
-        building.setLevel(cursor.getInt(2));
-        building.setHitpoints(cursor.getInt(3));
-        building.setCost(cursor.getInt(4));
-
-        String resourceType = cursor.getString(5);
-
-        building.setResourceType(ResourceType.GOLD);
-
-        int timeInSeconds = cursor.getInt(6);
-        building.setBuildTime(timeInSeconds);
-        building.setTownhallRequirement(cursor.getInt(7));
-        return building;
-    }
-
-    public HashMap<String, ArrayList<Building>> selectAllUserProgress2()
+    public HashMap<String, ArrayList<Building>> selectAllUserProgress()
     {
         HashMap<String, ArrayList<Building>> buildings = new HashMap<>();
-        String query = "SELECT UP._id, EL.EntityId, E.Name, EL.Level, E.Type FROM UserProgress UP Inner Join EntityLevels EL ON UP.EntityLevelId=EL._id  INNER JOIN Entities E ON E._id=EL.EntityId";
+        String query = "SELECT UP._id, EL.EntityId, E.Name, EL.Level, E.Type, EL.Cost, EL.ResourceType, EL.TimeInSeconds, EL.Image FROM UserProgress UP Inner Join EntityLevels EL ON UP.EntityLevelId=EL._id  INNER JOIN Entities E ON E._id=EL.EntityId";
         Cursor cursor = database.rawQuery(query, new String[]{});
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -65,11 +47,41 @@ public class BuildingDataSource {
             String buildingName = cursor.getString(2);
             long buildingLevel = cursor.getLong(3);
             String buildingType = cursor.getString(4);
+            int buildingCost = cursor.getInt(5);
+            String buildingResourceType = cursor.getString(6);
+            int buildingTimeInSeconds = cursor.getInt(7);
+            String buildingImage = cursor.getString(8);
+
+            ResourceType resourceType = null;
+            if(buildingResourceType.equalsIgnoreCase("gold"))
+            {
+                resourceType = ResourceType.GOLD;
+            }
+            else if(buildingResourceType.equalsIgnoreCase("elixir"))
+            {
+                resourceType = ResourceType.ELIXIR;
+            }
+            else if(buildingResourceType.equalsIgnoreCase("dark elixir"))
+            {
+                resourceType = ResourceType.DARK_ELIXIR;
+            }
+            else if(buildingResourceType.equalsIgnoreCase("gold;elixir"))
+            {
+                resourceType = ResourceType.GOLD_OR_ELIXIR;
+            }
+            else
+            {
+                resourceType = ResourceType.GOLD;
+            }
 
             building.setId(cursor.getInt(0));
             building.setEntityId(cursor.getInt(1));
             building.setName(buildingName);
             building.setLevel(buildingLevel);
+            building.setCost(buildingCost);
+            building.setResourceType(resourceType);
+            building.setBuildTime(buildingTimeInSeconds);
+            building.setImage(buildingImage);
 
             if(buildings.containsKey(buildingType))
             {
@@ -119,6 +131,10 @@ public class BuildingDataSource {
         cursor.close();
     }
 
+    /**
+     *
+     * @param building
+     */
     public void updateUserProgressEntity(Building building)
     {
         String selectQuery = "SELECT EntityLevels._id FROM EntityLevels WHERE EntityLevels.EntityId=? AND EntityLevels.Level=?";

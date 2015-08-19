@@ -51,8 +51,6 @@ public class ViewPagerFragment extends Fragment implements ViewPagerRecyclerAdap
         mAdapter = new ViewPagerRecyclerAdapter(buildings);
         mAdapter.setClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
-
-
         return v;
     }
 

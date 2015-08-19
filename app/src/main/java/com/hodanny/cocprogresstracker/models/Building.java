@@ -125,6 +125,40 @@ public class Building implements Comparable<Building>, Parcelable {
 
     public Building(){};
 
+    public String convertTimeToString()
+    {
+        StringBuilder sb = new StringBuilder();
+        int days;
+        int hours;
+        int minutes;
+
+        days = buildTime / 86400;
+        hours = (buildTime%86400) / 3600;
+        minutes = (buildTime%86400%3600) / 60;
+
+        if(days != 0)
+        {
+            sb.append(days + "d");
+        }
+        if(hours != 0)
+        {
+            if(sb.length() !=0)
+            {
+                sb.append(" ");
+            }
+            sb.append(hours + "h");
+        }
+        if(minutes != 0)
+        {
+            if(sb.length() !=0)
+            {
+                sb.append(" ");
+            }
+            sb.append(minutes + "m");
+        }
+        return sb.toString();
+
+    }
     @Override
     public boolean equals(Object o)
     {

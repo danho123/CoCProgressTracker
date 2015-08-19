@@ -1,6 +1,6 @@
 package com.hodanny.cocprogresstracker.activities;
 
-import android.os.Handler;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +15,8 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.hodanny.cocprogresstracker.R;
 import com.hodanny.cocprogresstracker.databases.BuildingDataSource;
 import com.hodanny.cocprogresstracker.databases.DbHandler;
+import com.hodanny.cocprogresstracker.fragments.SummaryFragment;
+import com.hodanny.cocprogresstracker.fragments.TownhallFragment;
 import com.hodanny.cocprogresstracker.fragments.ViewPagerFragment;
 import com.hodanny.cocprogresstracker.models.Building;
 
@@ -22,7 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class HomeActivity extends FragmentActivity {
+public class HomeActivity extends FragmentActivity implements SummaryFragment.OnFragmentInteractionListener, TownhallFragment.OnFragmentInteractionListener {
 
 
     public static BuildingDataSource mDatabase;
@@ -31,9 +33,12 @@ public class HomeActivity extends FragmentActivity {
     private MyPagerAdapter adapter;
 
     private int mCurrentTownhall = 5;
-    private HashMap<String, ArrayList<Building>> mMap;
-    public static HashMap<String, Integer> mMaxMap;
 
+    //viewpager data, divides the entities by categories.
+    private HashMap<String, ArrayList<Building>> mMap;
+
+    //keeps track of the max level for each entity depending on townhall level
+    public static HashMap<String, Integer> mMaxMap;
 
     private void InitDatabase()
     {
@@ -43,8 +48,13 @@ public class HomeActivity extends FragmentActivity {
             myDbHelper.initializeDataBase();
             mDatabase = new BuildingDataSource(this);
             mDatabase.open();
+            //populate userprogress table if it doesn't exist
             mDatabase.populateUserProgress(mCurrentTownhall, false);
-            mMap = mDatabase.selectAllUserProgress2();
+
+
+
+            mMap = mDatabase.selectAllUserProgress();
+            //
             mMaxMap = mDatabase.getEntityMaxLevelMap(mCurrentTownhall);
 
         } catch (IOException ioe) {
@@ -61,7 +71,7 @@ public class HomeActivity extends FragmentActivity {
         InitDatabase();
         tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         pager = (ViewPager) findViewById(R.id.pager);
-        adapter = new MyPagerAdapter(getSupportFragmentManager());
+        adapter = new MyPagerAdapter(getSupportFragmentManager(), mMap.keySet().toArray());
 
         pager.setAdapter(adapter);
 
@@ -93,26 +103,50 @@ public class HomeActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
     public class MyPagerAdapter extends FragmentPagerAdapter {
 
-        public MyPagerAdapter(FragmentManager fm) {
+        private ArrayList<String> pages = new ArrayList<>();
+        public MyPagerAdapter(FragmentManager fm, Object[] arr) {
             super(fm);
+            pages.add("Summary");
+            pages.add("Townhall");
+            for(int i = 0; i < arr.length;i++)
+            {
+                pages.add(arr[i].toString());
+            }
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mMap.keySet().toArray()[position].toString();
+            return pages.get(position);
         }
 
         @Override
         public int getCount() {
-            return mMap.keySet().toArray().length;
+            return pages.size();
         }
 
         @Override
         public Fragment getItem(int position)
         {
-            return ViewPagerFragment.newInstance(mMap.get(mMap.keySet().toArray()[position].toString()));
+            if(pages.get(position).equals("Summary"))
+            {
+                return SummaryFragment.newInstance("","");
+            }
+            else if(pages.get(position).equals("Townhall"))
+            {
+                return TownhallFragment.newInstance("","");
+            }
+            else
+            {
+                return ViewPagerFragment.newInstance(mMap.get(pages.get(position)));
+            }
+
         }
 
 

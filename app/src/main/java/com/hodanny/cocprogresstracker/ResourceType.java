@@ -7,6 +7,7 @@ public enum ResourceType
 {
     GOLD,
     ELIXIR,
+    GOLD_OR_ELIXIR,
     DARK_ELIXIR,
     GEM
 }
