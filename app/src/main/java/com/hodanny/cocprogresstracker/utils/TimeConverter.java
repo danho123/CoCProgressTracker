@@ -45,6 +45,7 @@ public class TimeConverter {
             sb.append(seconds + "s");
 
         }
-        return sb.toString();
+
+        return sb.toString().isEmpty() ? "0s" : sb.toString();
     }
 }

@@ -49,7 +49,7 @@ public class HomeActivity extends FragmentActivity implements SummaryFragment.On
             mDatabase = new BuildingDataSource(this);
             mDatabase.open();
             //populate userprogress table if it doesn't exist
-            mDatabase.populateUserProgress(mCurrentTownhall, false);
+            mDatabase.populateUserProgress(mCurrentTownhall, true);
 
 
 

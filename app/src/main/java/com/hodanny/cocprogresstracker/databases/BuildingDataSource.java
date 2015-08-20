@@ -47,6 +47,12 @@ public class BuildingDataSource {
             String buildingName = cursor.getString(2);
             long buildingLevel = cursor.getLong(3);
             String buildingType = cursor.getString(4);
+
+            if(buildingType.equalsIgnoreCase("trap"))
+            {
+                Log.e("DEBUG");
+            }
+
             int buildingCost = cursor.getInt(5);
             String buildingResourceType = cursor.getString(6);
             int buildingTimeInSeconds = cursor.getInt(7);
@@ -111,7 +117,7 @@ public class BuildingDataSource {
     public void populateUserProgress(int townhallLevel, boolean overwrite)
     {
         Cursor cur = database.rawQuery("SELECT COUNT(*) FROM UserProgress", null);
-        if (cur != null) {
+        if (cur != null && !overwrite) {
             cur.moveToFirst();                       // Always one row returned.
             if (cur.getInt (0) != 0 && !overwrite) {               // if there are records already then don't need to populate
 
