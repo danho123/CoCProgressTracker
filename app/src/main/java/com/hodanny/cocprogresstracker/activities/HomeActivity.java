@@ -32,7 +32,7 @@ public class HomeActivity extends FragmentActivity implements SummaryFragment.On
     private ViewPager pager;
     private MyPagerAdapter adapter;
 
-    private int mCurrentTownhall = 5;
+    private int mCurrentTownhall = 10;
 
     //viewpager data, divides the entities by categories.
     private HashMap<String, ArrayList<Building>> mMap;
@@ -113,8 +113,6 @@ public class HomeActivity extends FragmentActivity implements SummaryFragment.On
         private ArrayList<String> pages = new ArrayList<>();
         public MyPagerAdapter(FragmentManager fm, Object[] arr) {
             super(fm);
-            pages.add("Summary");
-            pages.add("Townhall");
             for(int i = 0; i < arr.length;i++)
             {
                 pages.add(arr[i].toString());
@@ -137,10 +135,6 @@ public class HomeActivity extends FragmentActivity implements SummaryFragment.On
             if(pages.get(position).equals("Summary"))
             {
                 return SummaryFragment.newInstance("","");
-            }
-            else if(pages.get(position).equals("Townhall"))
-            {
-                return TownhallFragment.newInstance("","");
             }
             else
             {

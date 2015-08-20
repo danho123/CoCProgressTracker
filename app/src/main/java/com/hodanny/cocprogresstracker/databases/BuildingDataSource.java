@@ -38,7 +38,7 @@ public class BuildingDataSource {
     public HashMap<String, ArrayList<Building>> selectAllUserProgress()
     {
         HashMap<String, ArrayList<Building>> buildings = new HashMap<>();
-        String query = "SELECT UP._id, EL.EntityId, E.Name, EL.Level, E.Type, EL.Cost, EL.ResourceType, EL.TimeInSeconds, EL.Image FROM UserProgress UP Inner Join EntityLevels EL ON UP.EntityLevelId=EL._id  INNER JOIN Entities E ON E._id=EL.EntityId";
+        String query = "SELECT UP._id, EL.EntityId, E.Name, EL.Level, E.Type, EL.Cost, EL.ResourceType, EL.TimeInSeconds, EL.Image, EL2.Cost as NextUpgradeCost, EL2.TimeInSeconds as NextUpgradeTime FROM UserProgress UP Inner Join EntityLevels EL ON UP.EntityLevelId=EL._id  INNER JOIN Entities E ON E._id=EL.EntityId LEFT JOIN EntityLevels EL2 ON EL.entityid=EL2.entityid AND EL.Level+1=EL2.Level";
         Cursor cursor = database.rawQuery(query, new String[]{});
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -51,6 +51,9 @@ public class BuildingDataSource {
             String buildingResourceType = cursor.getString(6);
             int buildingTimeInSeconds = cursor.getInt(7);
             String buildingImage = cursor.getString(8);
+
+            int nextUpgradeCost = cursor.getInt(9);
+            int nextUpgradeTime = cursor.getInt(10);
 
             ResourceType resourceType = null;
             if(buildingResourceType.equalsIgnoreCase("gold"))
@@ -82,6 +85,9 @@ public class BuildingDataSource {
             building.setResourceType(resourceType);
             building.setBuildTime(buildingTimeInSeconds);
             building.setImage(buildingImage);
+
+            building.setUpgradeCost(nextUpgradeCost);
+            building.setUpgradeTime(nextUpgradeTime);
 
             if(buildings.containsKey(buildingType))
             {
@@ -132,16 +138,35 @@ public class BuildingDataSource {
     }
 
     /**
-     *
+     * returns the cost and build time of the new entity
      * @param building
      */
-    public void updateUserProgressEntity(Building building)
+    public int[] updateUserProgressEntity(Building building)
     {
-        String selectQuery = "SELECT EntityLevels._id FROM EntityLevels WHERE EntityLevels.EntityId=? AND EntityLevels.Level=?";
+        String selectQuery = "SELECT EntityLevels._id, EntityLevels.Cost, EntityLevels.TimeInSeconds FROM EntityLevels WHERE EntityLevels.EntityId=? AND EntityLevels.Level=?";
         Cursor cursor = database.rawQuery(selectQuery, new String[]{String.valueOf(building.getEntityId()), String.valueOf(building.getLevel())});
         cursor.moveToFirst();
+
         String updateQuery = String.format("UPDATE UserProgress SET entityLevelId=%d WHERE _id=%d", cursor.getInt(0), building.getId());
         database.execSQL(updateQuery);
+
+        selectQuery = "SELECT EntityLevels._id, EntityLevels.Cost, EntityLevels.TimeInSeconds FROM EntityLevels WHERE EntityLevels.EntityId=? AND EntityLevels.Level=?";
+        cursor = database.rawQuery(selectQuery, new String[]{String.valueOf(building.getEntityId()), String.valueOf(building.getLevel()+1)});
+        cursor.moveToFirst();
+
+        int[] ret;
+
+        if(!cursor.isAfterLast())
+        {
+             ret = new int[] {cursor.getInt(1), cursor.getInt(2)};
+        }
+        else
+        {
+            ret = null; //it's maxed. no more upgrades.
+        }
+        cursor.close();
+        return ret;
+
     }
 
     public HashMap<String,Integer> getEntityMaxLevelMap(int townhallLevel)

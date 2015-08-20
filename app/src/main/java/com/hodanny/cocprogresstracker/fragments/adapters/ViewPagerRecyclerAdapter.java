@@ -9,10 +9,12 @@ import android.widget.TextView;
 
 import com.hodanny.cocprogresstracker.R;
 import com.hodanny.cocprogresstracker.models.Building;
+import com.hodanny.cocprogresstracker.utils.TimeConverter;
 
 import java.util.List;
 
-import butterknife.OnClick;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by dan on 8/13/2015.
@@ -29,15 +31,25 @@ public class ViewPagerRecyclerAdapter extends RecyclerView.Adapter<ViewPagerRecy
 
     @Override
     public EntityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.entity_card, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.entity_card_level, parent, false);
         EntityViewHolder bvh = new EntityViewHolder(v);
         return bvh;
     }
 
     @Override
     public void onBindViewHolder(EntityViewHolder holder, final int position) {
-        holder.mBuildingName.setText(buildings.get(position).getName());
-        holder.mBuildingLevel.setText(buildings.get(position).getLevel() + "");
+
+        Building building = buildings.get(position);
+        holder.mBuildingName.setText(building.getName());
+        holder.mBuildingLevel.setText(building.getLevel() + "");
+
+        if(building.getUpgradeCost() != 0) {
+            holder.mNextUpgrade.setText(String.format("%d, %s", building.getUpgradeCost(), TimeConverter.formatSeconds(building.getUpgradeTime())));
+        }
+        else
+        {
+            holder.mNextUpgrade.setText("MAXED");
+        }
     }
 
     public void setClickListener(ClickListener clickListener)
@@ -57,19 +69,20 @@ public class ViewPagerRecyclerAdapter extends RecyclerView.Adapter<ViewPagerRecy
         TextView mBuildingLevel;
         Button mUpgrade;
         Button mDowngrade;
+        TextView mNextUpgrade;
+
         public EntityViewHolder(View view)
         {
             super(view);
-            mBuildingName = (TextView)view.findViewById(R.id.upgrade_card_name);
-            mUpgrade = (Button)view.findViewById(R.id.button_upgrade);
+
+            mBuildingName = (TextView) view.findViewById(R.id.upgrade_card_name);
+            mBuildingLevel = (TextView) view.findViewById(R.id.upgrade_card_level);
+            mUpgrade = (Button) view.findViewById(R.id.button_upgrade);
+            mDowngrade = (Button) view.findViewById(R.id.button_downgrade);
+            mNextUpgrade = (TextView) view.findViewById(R.id.upgrade_card_next);
+
             mUpgrade.setTag("upgrade");
-
-
-            mDowngrade = (Button)view.findViewById(R.id.button_downgrade);
             mDowngrade.setTag("downgrade");
-
-            mBuildingLevel = (TextView)view.findViewById(R.id.upgrades_card_level);
-
             mUpgrade.setOnClickListener(this);
             mDowngrade.setOnClickListener(this);
         }

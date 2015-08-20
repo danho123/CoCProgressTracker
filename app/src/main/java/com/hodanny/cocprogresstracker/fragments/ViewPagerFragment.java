@@ -47,7 +47,6 @@ public class ViewPagerFragment extends Fragment implements ViewPagerRecyclerAdap
         mRecyclerView = (RecyclerView)v.findViewById(R.id.fragment_recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         mAdapter = new ViewPagerRecyclerAdapter(buildings);
         mAdapter.setClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
@@ -61,12 +60,27 @@ public class ViewPagerFragment extends Fragment implements ViewPagerRecyclerAdap
         if(v.getTag().equals("upgrade") && building.getLevel() < HomeActivity.mMaxMap.get(building.getName()))
         {
             building.upgrade();
-            HomeActivity.mDatabase.updateUserProgressEntity(building);
+            int[] newCostAndTime = HomeActivity.mDatabase.updateUserProgressEntity(building);
+            if(newCostAndTime != null) {
+                building.setUpgradeCost(newCostAndTime[0]);
+                building.setUpgradeTime(newCostAndTime[1]);
+            }
+            else
+            {
+                building.setUpgradeCost(0);
+                building.setUpgradeTime(0);
+            }
         }
         if(v.getTag().equals("downgrade") && building.getLevel() > 0)
         {
             building.downgrade();
-            HomeActivity.mDatabase.updateUserProgressEntity(building);
+            int[] newCostAndTime = HomeActivity.mDatabase.updateUserProgressEntity(building);
+
+            if(newCostAndTime != null) {
+                building.setUpgradeCost(newCostAndTime[0]);
+                building.setUpgradeTime(newCostAndTime[1]);
+            }
+
         }
         mAdapter.notifyDataSetChanged();
     }
