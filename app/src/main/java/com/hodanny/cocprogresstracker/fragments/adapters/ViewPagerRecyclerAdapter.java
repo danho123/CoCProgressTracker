@@ -1,13 +1,16 @@
 package com.hodanny.cocprogresstracker.fragments.adapters;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.hodanny.cocprogresstracker.R;
+import com.hodanny.cocprogresstracker.activities.HomeActivity;
 import com.hodanny.cocprogresstracker.models.Building;
 import com.hodanny.cocprogresstracker.utils.TimeConverter;
 
@@ -41,7 +44,17 @@ public class ViewPagerRecyclerAdapter extends RecyclerView.Adapter<ViewPagerRecy
 
         Building building = buildings.get(position);
         holder.mBuildingName.setText(building.getName());
-        holder.mBuildingLevel.setText(building.getLevel() + "");
+
+        if(building.getLevel() != 0)
+        {
+            holder.mBuildingLevel.setText("Level " + building.getLevel());
+            holder.mBuildingLevel.setTextColor(Color.BLACK);
+        }
+        else
+        {
+            holder.mBuildingLevel.setText("NOT BUILT");
+            holder.mBuildingLevel.setTextColor(Color.RED);
+        }
 
         if(building.getUpgradeCost() != 0) {
             holder.mNextUpgrade.setText(String.format("%d, %s", building.getUpgradeCost(), TimeConverter.formatSeconds(building.getUpgradeTime())));
@@ -50,6 +63,10 @@ public class ViewPagerRecyclerAdapter extends RecyclerView.Adapter<ViewPagerRecy
         {
             holder.mNextUpgrade.setText("MAXED");
         }
+
+        float progress =  ((float)building.getLevel()/HomeActivity.mMaxMap.get(building.getName()))*100;
+        holder.mProgressBar.setProgress(Math.round(progress));
+
     }
 
     public void setClickListener(ClickListener clickListener)
@@ -71,9 +88,13 @@ public class ViewPagerRecyclerAdapter extends RecyclerView.Adapter<ViewPagerRecy
         Button mDowngrade;
         TextView mNextUpgrade;
 
+        @Bind(R.id.entity_progressbar) ProgressBar mProgressBar;
+
         public EntityViewHolder(View view)
         {
             super(view);
+
+            ButterKnife.bind(this, view);
 
             mBuildingName = (TextView) view.findViewById(R.id.upgrade_card_name);
             mBuildingLevel = (TextView) view.findViewById(R.id.upgrade_card_level);

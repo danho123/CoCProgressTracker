@@ -48,7 +48,7 @@ public class BuildingDataSource {
             long buildingLevel = cursor.getLong(3);
             String buildingType = cursor.getString(4);
 
-            if(buildingType.equalsIgnoreCase("trap"))
+            if(buildingType.equalsIgnoreCase("townhall"))
             {
                 Log.e("DEBUG");
             }

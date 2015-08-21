@@ -32,6 +32,15 @@
             android:gravity="center_vertical"
             android:textSize="20sp"
             android:text="@string/placeholder"/>
+
+        <TextView
+            android:id="@+id/upgrade_card_level"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/placeholder">
+        </TextView>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="0dp"
@@ -58,33 +67,30 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
         android:orientation="horizontal">
-
         <Button
             android:id="@+id/button_downgrade"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_gravity="center"
             android:text="-"/>
-        <TextView
-            android:id="@+id/upgrade_card_level"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="0">
-        </TextView>
-
         <Button
             android:id="@+id/button_upgrade"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_gravity="center"
             android:text="+"/>
     </LinearLayout>
     </LinearLayout>
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:background="#c0c0c0"/>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:id="@+id/entity_progressbar"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"/>
+
     </LinearLayout>
 
 </android.support.v7.widget.CardView>
