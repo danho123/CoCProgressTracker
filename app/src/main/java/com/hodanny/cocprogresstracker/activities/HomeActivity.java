@@ -15,8 +15,6 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.hodanny.cocprogresstracker.R;
 import com.hodanny.cocprogresstracker.databases.BuildingDataSource;
 import com.hodanny.cocprogresstracker.databases.DbHandler;
-import com.hodanny.cocprogresstracker.fragments.SummaryFragment;
-import com.hodanny.cocprogresstracker.fragments.TownhallFragment;
 import com.hodanny.cocprogresstracker.fragments.ViewPagerFragment;
 import com.hodanny.cocprogresstracker.models.Building;
 
@@ -24,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class HomeActivity extends FragmentActivity implements SummaryFragment.OnFragmentInteractionListener, TownhallFragment.OnFragmentInteractionListener {
+public class HomeActivity extends FragmentActivity{
 
 
     public static BuildingDataSource mDatabase;
@@ -32,10 +30,11 @@ public class HomeActivity extends FragmentActivity implements SummaryFragment.On
     private ViewPager pager;
     private MyPagerAdapter adapter;
 
-    private int mCurrentTownhall = 10;
+
 
     //viewpager data, divides the entities by categories.
     private HashMap<String, ArrayList<Building>> mMap;
+    private int mCurrentTownhall = 10;
 
     //keeps track of the max level for each entity depending on townhall level
     public static HashMap<String, Integer> mMaxMap;
@@ -49,7 +48,7 @@ public class HomeActivity extends FragmentActivity implements SummaryFragment.On
             mDatabase = new BuildingDataSource(this);
             mDatabase.open();
             //populate userprogress table if it doesn't exist
-            mDatabase.populateUserProgress(mCurrentTownhall, true);
+            mDatabase.populateUserProgress(mCurrentTownhall, false);
 
 
 
@@ -103,11 +102,6 @@ public class HomeActivity extends FragmentActivity implements SummaryFragment.On
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
     public class MyPagerAdapter extends FragmentPagerAdapter {
 
         private ArrayList<String> pages = new ArrayList<>();
@@ -132,15 +126,7 @@ public class HomeActivity extends FragmentActivity implements SummaryFragment.On
         @Override
         public Fragment getItem(int position)
         {
-            if(pages.get(position).equals("Summary"))
-            {
-                return SummaryFragment.newInstance("","");
-            }
-            else
-            {
-                return ViewPagerFragment.newInstance(mMap.get(pages.get(position)));
-            }
-
+            return ViewPagerFragment.newInstance(mMap.get(pages.get(position)));
         }
 
 

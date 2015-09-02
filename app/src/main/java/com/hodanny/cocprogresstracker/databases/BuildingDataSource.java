@@ -6,6 +6,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.hodanny.cocprogresstracker.models.Building;
+import com.hodanny.cocprogresstracker.models.Walls;
 import com.hodanny.cocprogresstracker.utils.Log;
 import com.hodanny.cocprogresstracker.ResourceType;
 
@@ -187,6 +188,30 @@ public class BuildingDataSource {
         }
         cursor.close();
         return map;
+    }
+
+    public List<Walls> getWalls()
+    {
+        ArrayList<Walls> walls = new ArrayList<>();
+        String query = "SELECT E.Name, EL.Level, EL.Cost, EL.ResourceType, CASE WHEN UP._id IS NULL THEN 0 ELSE COUNT(*) END AS Count FROM EntityLevels EL  LEFT JOIN UserProgress UP ON UP.EntityLevelId=EL._id INNER JOIN Entities E ON E._id=EL.entityId WHERE E.Name=\"Wall\" GROUP BY Level";
+        Cursor cursor = database.rawQuery(query, new String[]{});
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Walls wall = new Walls();
+            wall.setName(cursor.getString(0));
+            wall.setLevel(cursor.getInt(1));
+            wall.setCost(cursor.getInt(2));
+            wall.setResourceType(ResourceType.GOLD);
+            wall.setCount(cursor.getInt(4));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return walls;
+    }
+
+    public void updateTownhallLevel(int i )
+    {
+
     }
 
 }
